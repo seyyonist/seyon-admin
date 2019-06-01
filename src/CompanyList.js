@@ -2,42 +2,75 @@ import React from 'react';
 
 export default function CompanyList() {
     return (
-        <div class="col-12 grid-margin">
-            <div class="card">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="card-body">
-                            <h4 class="card-title">Single color buttons</h4>
-                            <p class="card-description">Add class <code>.btn-&lt;color&lg;</code> for buttons in theme colors</p>
-                            <div class="template-demo">
-                                <button type="button" class="btn btn-primary">Primary</button>
-                                <button type="button" class="btn btn-secondary">Secondary</button>
-                                <button type="button" class="btn btn-success">Success</button>
-                                <button type="button" class="btn btn-danger">Danger</button>
-                                <button type="button" class="btn btn-warning">Warning</button>
-                                <button type="button" class="btn btn-info">Info</button>
-                                <button type="button" class="btn btn-light">Light</button>
-                                <button type="button" class="btn btn-dark">Dark</button>
-                                <button type="button" class="btn btn-link">Link</button>
+        <div className="col-12 grid-margin">
+            <div className="accordion accordion-solid-header" id="accordion-4" role="tablist">
+                <div className="card">
+                    <div className="card-header" role="tab" id="heading-10">
+                        <h6 className="mb-0">
+                            <a data-toggle="collapse" href="#collapse-10" aria-expanded="true" aria-controls="collapse-10" className="">
+                                Filter
+                            </a>
+                        </h6>
+                    </div>
+                    <div id="collapse-10" className="collapse show" role="tabpanel" aria-labelledby="heading-10" data-parent="#accordion-4">
+                        <div className="card-body">
+                            <div className="row">
+                                Form for search
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="card-body">
-                            <h4 class="card-title">Rounded buttons</h4>
-                            <p class="card-description">Add class <code>.btn-rounded</code></p>
-                            <div class="template-demo">
-                                <button type="button" class="btn btn-primary btn-rounded btn-fw">Primary</button>
-                                <button type="button" class="btn btn-secondary btn-rounded btn-fw">Secondary</button>
-                                <button type="button" class="btn btn-success btn-rounded btn-fw">Success</button>
-                                <button type="button" class="btn btn-danger btn-rounded btn-fw">Danger</button>
-                                <button type="button" class="btn btn-warning btn-rounded btn-fw">Warning</button>
-                                <button type="button" class="btn btn-info btn-rounded btn-fw">Info</button>
-                                <button type="button" class="btn btn-light btn-rounded btn-fw">Light</button>
-                                <button type="button" class="btn btn-dark btn-rounded btn-fw">Dark</button>
-                                <button type="button" class="btn btn-link btn-rounded btn-fw">Link</button>
-                            </div>
-                        </div>
+                </div>
+            </div>
+            <div className="card">
+                <div className="card-body">
+                    <h4 className="card-title">Result</h4>
+                    <p className="card-description">
+                       displaying 1/10
+                    </p>
+                    <div className="table-responsive">
+                        <table className="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        User
+                          </th>
+                                    <th>
+                                        First name
+                          </th>
+                                    <th>
+                                        Progress
+                          </th>
+                                    <th>
+                                        Amount
+                          </th>
+                                    <th>
+                                        Deadline
+                          </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td className="py-1">
+                                        <img src="../../../../images/faces/face1.jpg" alt="image" />
+                                    </td>
+                                    <td>
+                                        Herman Beck
+                          </td>
+                                    <td>
+                                        <div className="progress">
+                                            <div className="progress-bar bg-success" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        $ 77.99
+                          </td>
+                                    <td>
+                                        May 15, 2015
+                          </td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
