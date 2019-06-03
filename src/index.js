@@ -4,9 +4,9 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { BrowserRouter } from 'react-router-dom'
-//<BrowserRouter basename="/admin">
+//<BrowserRouter ">
 ReactDOM.render(
-    <BrowserRouter>
+    <BrowserRouter basename="/admin">
         <App />
     </BrowserRouter>, 
     document.getElementById('root'));
