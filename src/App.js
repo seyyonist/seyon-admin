@@ -17,10 +17,10 @@ function App() {
   return (
     <div>
       <Nav />
-      <div class="container-fluid page-body-wrapper">
+      <div className="container-fluid page-body-wrapper">
         <Sidebar />
-        <div class="main-panel">
-          <div class="content-wrapper">
+        <div className="main-panel">
+          <div className="content-wrapper">
             <Main />
           </div>
         </div>
