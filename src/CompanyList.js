@@ -1,6 +1,20 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 
+const CompanyRow=(props)=>{
+
+    return(
+        <tr>
+            <td>{props.txn.companyName}</td>
+            <td>{props.txn.ownerName}</td>
+            <td>{props.txn.primaryEmail}</td>
+            <td>{props.txn.city}</td>
+            <td>{props.txn.state}</td>
+            <td>{props.txn.status}</td>
+        </tr>
+    )
+}
+
 export default class CompanyList extends Component {
 
     state = {
@@ -11,10 +25,15 @@ export default class CompanyList extends Component {
             city: "",
             state: "",
             status: ""
-        }
+        },
+        first: true,
+        last: true,
+        number: 0,
+        numberOfElements: 7,
+        size: 20,
+        totalElements: 7,
+        totalPages: 1
     }
-
-
 
     handleInputChange(event) {
         const target = event.target;
@@ -35,15 +54,34 @@ export default class CompanyList extends Component {
             state: self.state.search.state,
             status:self.state.search.status
         }
-        axios.post("/api/company/filterCompany",data).then(
+        axios.post("/api/company/filterCompany?pageNumber=0&pageSize=20",data).then(
             resp=>{
                 console.log(resp);
+                let data=resp.data
+                self.setState({
+                    companyList:data.content,
+                    first: data.first,
+                    last: data.last,
+                    number: data.number,
+                    numberOfElements: data.numberOfElements,
+                    size: data.size,
+                    totalElements: data.totalElements,
+                    totalPages: data.totalPages
+                })
             },
             err=>{console.log(err)}
         )
+        
     }
 
+
+
     render() {
+        const isContentSize = this.state.numberOfElements;
+        let tableData;
+        if(isContentSize>=0){
+            tableData=this.state.companyList.map(c=><CompanyRow txn={c} key={c.companyId}/>);
+        }
         return (
             <div className="col-12 grid-margin">
                 <div className="accordion accordion-solid-header" id="accordion-4" role="tablist">
@@ -118,16 +156,11 @@ export default class CompanyList extends Component {
                                         <th>Email</th>
                                         <th>City</th>
                                         <th>State</th>
+                                        <th>Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>Companies</td>
-                                        <td>Owner name</td>
-                                        <td>Email</td>
-                                        <td>City</td>
-                                        <td>State</td>
-                                    </tr>
+                                    {tableData}
                                 </tbody>
                             </table>
                         </div>
