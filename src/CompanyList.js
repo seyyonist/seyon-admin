@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 
-const CompanyRow=(props)=>{
+const CompanyRow = (props) => {
 
-    return(
+    return (
         <tr>
             <td>{props.txn.companyName}</td>
             <td>{props.txn.ownerName}</td>
@@ -14,6 +14,10 @@ const CompanyRow=(props)=>{
         </tr>
     )
 }
+
+const StateSelect = props => <select name="state" className="form-control" value={props.selectedValue}  onChange={(e) => props.handleStateChange(e)}><option/>{props.data.map((st,index) => <option key={index}>{st.state}</option>)}</select>;
+
+const CitySelect = props => <select name="city" className="form-control" value={props.selectedValue}  onChange={(e) => props.handleStateChange(e)}><option/>{props.data.map((city,index) => <option key={index}>{city}</option>)}</select>;
 
 export default class CompanyList extends Component {
 
@@ -32,7 +36,29 @@ export default class CompanyList extends Component {
         numberOfElements: 7,
         size: 20,
         totalElements: 7,
-        totalPages: 1
+        totalPages: 1,
+        pageNumbers: [],
+        states:[],
+        cities:[]
+    }
+
+    componentDidMount(){
+        this.getCityState();
+    }
+
+    getCityState(){
+        let self = this;
+        axios.get("/city_state.json").then(
+            resp=>{
+                self.setState({
+                    states:resp.data.states
+                })
+            },
+            err=>{
+                console.log(err)
+            }
+        )
+
     }
 
     handleInputChange(event) {
@@ -40,26 +66,46 @@ export default class CompanyList extends Component {
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
         this.setState({
-            search:{
+            search: {
                 [name]: value
             }
         });
     }
-    search(){
-        let self=this;
-        let data={
-            companyName: self.state.search.companyName,
-            ownerName: self.state.search.ownerName,
-            city: self.state.search.city,
-            state: self.state.search.state,
-            status:self.state.search.status
+
+
+    handleStateChange(event){
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+        if(value===""){
+            return
         }
-        axios.post("/api/company/filterCompany?pageNumber=0&pageSize=20",data).then(
-            resp=>{
+        const cities=this.state.states.filter(st=>st.state===value).map(st=>st.districts)
+        this.setState({
+            search: {
+                state: value
+            },
+            cities:cities[0]
+        });
+    }
+
+    search(pageNumber, pageSize) {
+        let self = this;
+        let data = {
+            companyName: this.state.search.companyName,
+            ownerName: this.state.search.ownerName,
+            city: this.state.search.city,
+            state: this.state.search.state,
+            status: this.state.search.status
+        }
+
+        console.log(data);
+        axios.post("/api/company/filterCompany?pageNumber=0&pageSize=1", data).then(
+            resp => {
                 console.log(resp);
-                let data=resp.data
+                let data = resp.data
                 self.setState({
-                    companyList:data.content,
+                    companyList: data.content,
                     first: data.first,
                     last: data.last,
                     number: data.number,
@@ -68,20 +114,39 @@ export default class CompanyList extends Component {
                     totalElements: data.totalElements,
                     totalPages: data.totalPages
                 })
+                self.generatePageNumbers(data.totalPages);
             },
-            err=>{console.log(err)}
+            err => { console.log(err) }
         )
-        
+
     }
 
-
+    generatePageNumbers(totalPages) {
+        let pageNumbers = Array.from(Array(totalPages), (x, index) => index + 1)
+        this.setState({
+            pageNumbers: pageNumbers
+        })
+    }
 
     render() {
         const isContentSize = this.state.numberOfElements;
         let tableData;
-        if(isContentSize>=0){
-            tableData=this.state.companyList.map(c=><CompanyRow txn={c} key={c.companyId}/>);
+        if (isContentSize >= 0) {
+            tableData = this.state.companyList.map(c => <CompanyRow txn={c} key={c.companyId} />);
         }
+
+        const statesLoaded=this.state.states.length;
+        let stateData;
+        if(statesLoaded>0){
+            stateData= <StateSelect selectedValue={this.state.search.state} handleStateChange={(e)=>this.handleStateChange(e)} data={this.state.states}/>
+        }
+
+        const cityLoaded=this.state.cities.length;
+        let cityData;
+        if(cityLoaded>0){
+            cityData= <CitySelect selectedValue={this.state.search.city} handleStateChange={(e)=>this.handleInputChange(e)} data={this.state.cities}/>
+        }
+
         return (
             <div className="col-12 grid-margin">
                 <div className="accordion accordion-solid-header" id="accordion-4" role="tablist">
@@ -112,28 +177,38 @@ export default class CompanyList extends Component {
                                     </div>
                                     <div className="col-md-2">
                                         <div className="form-group">
-                                            <label>City</label>
-                                            <input type="text" className="form-control" name="city" value={this.state.search.city}
-                                                onChange={(e) => this.handleInputChange(e)} />
+                                            <label>State</label>
+                                            {stateData}
                                         </div>
                                     </div>
                                     <div className="col-md-2">
                                         <div className="form-group">
-                                            <label>State</label>
-                                            <input type="text" className="form-control" name="state" value={this.state.search.state}
-                                                onChange={(e) => this.handleInputChange(e)} />
+                                            <label>City</label>
+                                            {cityData}
                                         </div>
                                     </div>
                                     <div className="col-md-2">
                                         <div className="form-group">
                                             <label>Status</label>
-                                            <input type="text" className="form-control" name="status" value={this.state.search.status}
-                                                onChange={(e) => this.handleInputChange(e)} />
+                                             <select id="status" name="status" className="form-control" value={this.state.search.status}  onChange={(e) => this.handleInputChange(e)} >
+                                                 <option/>
+                                                <option value="Artificial_Juridical_person">Artificial Juridical person</option>
+                                                <option value="Association_of_persons">Association of persons</option>
+                                                <option value="Body_of_Individuals">Body of Individuals</option>
+                                                <option value="Company">Company</option>
+                                                <option value="Firm">Firm</option>
+                                                <option value="Government">Government</option>
+                                                <option value="Hindu_Undivided_family">Hindu Undivided family</option>
+                                                <option value="Individual">Individual</option>
+                                                <option value="Limited_Liability_partnership">Limited Liability partnership</option>
+                                                <option value="Local_Authority">Local Authority</option>
+                                                <option value="Trust">Trust</option>
+                                            </select>
                                         </div>
                                     </div><div className="col-md-2">
                                         <div className="form-group">
                                             <br />
-                                            <button className="btn btn-secondary mt-2" onClick={()=>this.search()}>Search</button></div>
+                                            <button className="btn btn-secondary mt-2" onClick={() => this.search()}>Search</button></div>
                                     </div>
 
                                 </div>
@@ -164,6 +239,26 @@ export default class CompanyList extends Component {
                                 </tbody>
                             </table>
                         </div>
+                    </div>
+                    <div className="card-footer">
+                        <ul className="pagination">
+                            <li className="paginate_button page-item previous" id="order-listing_previous">
+                                <a href="#" aria-controls="order-listing" data-dt-idx="0" tabIndex="0" className="page-link">Previous</a>
+                            </li>
+                            {
+                                this.state.pageNumbers.map((no,index) => {
+                                    return (
+                                        <li className="paginate_button page-item active" key={index}>
+                                            <a href="#" aria-controls="order-listing" key={index} data-dt-idx="1" tabIndex="0" className="page-link">{no}</a>
+                                        </li>
+                                    )
+                                }
+                                )
+                            }
+                            <li className="paginate_button page-item next" id="order-listing_next">
+                                <a href="#" aria-controls="order-listing" data-dt-idx="2" tabIndex="0" className="page-link">Next</a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
