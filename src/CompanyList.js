@@ -2,7 +2,12 @@ import React, { Component } from 'react';
 import axios from 'axios';
 
 const CompanyRow = (props) => {
-
+    let active;
+    if(props.txn.active){
+        active=<div className="badge badge-success">Active</div>
+    }else{
+        active=<div className="badge badge-outline-primary">inActive</div>
+    }
     return (
         <tr>
             <td>{props.txn.companyName}</td>
@@ -11,6 +16,8 @@ const CompanyRow = (props) => {
             <td>{props.txn.city}</td>
             <td>{props.txn.state}</td>
             <td>{props.txn.status}</td>
+            <td>{active}</td>
+            <td><a className="c-pointer">View</a></td>
         </tr>
     )
 }
@@ -30,7 +37,8 @@ export default class CompanyList extends Component {
             ownerName: "",
             city: "",
             state: "",
-            status: ""
+            status: "",
+            active:true
         },
         first: true,
         last: true,
@@ -93,7 +101,8 @@ export default class CompanyList extends Component {
                 city: this.state.search.city,
                 state: this.state.search.state,
                 status: this.state.search.status,
-                companyName: value
+                companyName: value,
+                active:this.state.search.active
             }
         });
     }
@@ -104,10 +113,10 @@ export default class CompanyList extends Component {
             search: {
                 ownerName: value,
                 companyName: this.state.search.companyName,
-
                 city: this.state.search.city,
                 state: this.state.search.state,
-                status: this.state.search.status
+                status: this.state.search.status,
+                active:this.state.search.active
             }
         });
     }
@@ -119,9 +128,9 @@ export default class CompanyList extends Component {
                 city: value,
                 companyName: this.state.search.companyName,
                 ownerName: this.state.search.ownerName,
-
                 state: this.state.search.state,
-                status: this.state.search.status
+                status: this.state.search.status,
+                active:this.state.search.active
             }
         });
     }
@@ -134,11 +143,27 @@ export default class CompanyList extends Component {
                 ownerName: this.state.search.ownerName,
                 city: this.state.search.city,
                 state: this.state.search.state,
-                status: value
+                status: value,
+                active:this.state.search.active
             }
         });
     }
 
+    handleCheckboxChange(event){
+        
+        const value = event.target.value;
+        console.log(value)
+        this.setState({
+            search: {
+                companyName: this.state.search.companyName,
+                ownerName: this.state.search.ownerName,
+                city: this.state.search.city,
+                state: this.state.search.state,
+                status: this.state.search.status,
+                active:value
+            }
+        }); 
+    }
 
     handleStateChange(event) {
         const value = event.target.value;
@@ -152,13 +177,14 @@ export default class CompanyList extends Component {
                 companyName: this.state.search.companyName,
                 ownerName: this.state.search.ownerName,
                 city: this.state.search.city,
-                status: this.state.search.status
+                status: this.state.search.status,
+                active:this.state.search.active
             },
             cities: cities[0]
         });
     }
 
-    search(pageNumber=0, pageSize=20) {
+    search(pageNumber=0, pageSize=6) {
 
         let self = this;
         let data = {
@@ -166,7 +192,8 @@ export default class CompanyList extends Component {
             ownerName: this.state.search.ownerName,
             city: this.state.search.city,
             state: this.state.search.state,
-            status: this.state.search.status
+            status: this.state.search.status,
+           
         }
 
         axios.post("/api/company/filterCompany?pageNumber=".concat(pageNumber).concat("&pageSize=").concat(pageSize), data).then(
@@ -204,12 +231,12 @@ export default class CompanyList extends Component {
             tableData = this.state.companyList.map(c => <CompanyRow txn={c} key={c.companyId} />);
         }
         let previous;
-        if(this.state.currentPage+1>this.state.totalPages){
+        if(!this.state.first){
             previous=<li className="paginate_button page-item previous" ><a tabIndex="0" className="page-link c-pointer" onClick={(e)=>this.search(this.state.currentPage-1)}>Previous</a></li>
         }
         let next;
-        if(this.state.currentPage+1<this.state.totalPages){
-            next=<li className="paginate_button page-item next" ><a tabIndex="0" className="page-link c-pointer" onClick={(e)=>this.search(this.state.currentPage+1)}>Previous</a></li>
+        if(!this.state.last){
+            next=<li className="paginate_button page-item next" ><a tabIndex="0" className="page-link c-pointer" onClick={(e)=>this.search(this.state.currentPage+1)}>Next</a></li>
         }
         return (
             <div className="col-12 grid-margin">
@@ -257,15 +284,26 @@ export default class CompanyList extends Component {
                                             <label>Status</label>
                                             <StatusSelect selectedValue={this.state.search.status} handleStateChange={(e) => this.handleStatusChange(e)} data={this.state.statuses} />
                                         </div>
-                                    </div><div className="col-md-2">
-                                        <div className="form-group">
-                                            <br />
-                                            <button className="btn btn-primary mt-2" onClick={() => this.search()}>Search</button>
-                                            &nbsp;
-                                            <button className="btn btn-inverse-primary mt-2" onClick={() => this.clearForm()}>Clear</button>
-                                        </div>
+                                    </div>
+                                    <div className="col-md-1">
+                                    <div className="form-group">
+                                    <p> &nbsp;Active&nbsp;</p>
+                                            <label className="toggle-switch toggle-switch-success mt-2">
+                                                <input type="checkbox"  checked={this.state.search.active}  onChange={(e)=>this.handleCheckboxChange(e)}/>
+                                                <span className="toggle-slider round"></span>
+                                            </label>
+                                            </div>
                                     </div>
 
+                                    <div className="col-md-1">
+                                        <div className="form-group">
+                                            <br />
+                                            <button className="btn btn-primary mt-2 btn-sm" onClick={() => this.search()}><i className="fas fa-search"></i></button>
+                                            &nbsp;
+                                            <button className="btn btn-inverse-primary mt-2 btn-sm" onClick={() => this.clearForm()}><i className="fas fa-broom"></i></button>
+                                        </div>
+                                    </div>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -284,6 +322,8 @@ export default class CompanyList extends Component {
                                         <th>City</th>
                                         <th>State</th>
                                         <th>Status</th>
+                                        <th>Active</th>
+                                        <th>Details</th>
                                     </tr>
                                 </thead>
                                 <tbody>
