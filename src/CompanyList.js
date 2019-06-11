@@ -38,7 +38,7 @@ export default class CompanyList extends Component {
             city: "",
             state: "",
             status: "",
-            active:true
+            active:false
         },
         first: true,
         last: true,
@@ -56,6 +56,7 @@ export default class CompanyList extends Component {
 
     componentDidMount() {
         this.getCityState();
+        this.search();
     }
 
     getCityState() {
@@ -150,8 +151,7 @@ export default class CompanyList extends Component {
     }
 
     handleCheckboxChange(event){
-        
-        const value = event.target.value;
+        const value = event.target.checked;
         console.log(value)
         this.setState({
             search: {
@@ -193,7 +193,7 @@ export default class CompanyList extends Component {
             city: this.state.search.city,
             state: this.state.search.state,
             status: this.state.search.status,
-           
+            active:this.state.search.active
         }
 
         axios.post("/api/company/filterCompany?pageNumber=".concat(pageNumber).concat("&pageSize=").concat(pageSize), data).then(

@@ -6,17 +6,10 @@ export default function Sidebar() {
     <nav className="sidebar sidebar-offcanvas" id="sidebar">
       <ul className="nav">
         <li className="nav-item">
-          <a className="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
-            <i className="typcn typcn-document-text menu-icon"></i>
-            <span className="menu-title">Companies</span>
-            <i className="menu-arrow"></i>
-          </a>
-          <div className="collapse" id="ui-basic">
-            <ul className="nav flex-column sub-menu">
-              <li className="nav-item"> <Link className="nav-link" to="/">FYA</Link></li>
-              <li className="nav-item"> <Link className="nav-link" to="/">Search</Link></li>
-            </ul>
-          </div>
+          <Link class="nav-link" href="/">
+            <i className="fas fa-building menu-icon"></i>
+            <span class="menu-title">Company</span>
+          </Link>
         </li>
       </ul>
     </nav>
