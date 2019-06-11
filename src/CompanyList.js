@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 
+import { Link } from 'react-router-dom';
+
 const CompanyRow = (props) => {
     let active;
     if(props.txn.active){
@@ -8,6 +10,7 @@ const CompanyRow = (props) => {
     }else{
         active=<div className="badge badge-outline-primary">inActive</div>
     }
+    let url="/companyDetails/".concat(props.txn.companyId);
     return (
         <tr>
             <td>{props.txn.companyName}</td>
@@ -17,7 +20,7 @@ const CompanyRow = (props) => {
             <td>{props.txn.state}</td>
             <td>{props.txn.status}</td>
             <td>{active}</td>
-            <td><a className="c-pointer">View</a></td>
+            <td><Link className="c-pointer" to={url}>View</Link></td>
         </tr>
     )
 }

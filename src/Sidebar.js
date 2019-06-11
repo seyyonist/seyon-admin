@@ -6,9 +6,9 @@ export default function Sidebar() {
     <nav className="sidebar sidebar-offcanvas" id="sidebar">
       <ul className="nav">
         <li className="nav-item">
-          <Link class="nav-link" href="/">
+          <Link className="nav-link" to="/">
             <i className="fas fa-building menu-icon"></i>
-            <span class="menu-title">Company</span>
+            <span className="menu-title">Company</span>
           </Link>
         </li>
       </ul>
