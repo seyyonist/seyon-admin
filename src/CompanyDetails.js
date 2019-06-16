@@ -25,7 +25,25 @@ export default class CompanyDetails extends Component {
         )
     }
 
+    activate(){
+        let self = this
+        let companyByIdUrl = "/api/company/getCompanyById?companyId=".concat(companyId)
+        axios.get(companyByIdUrl).then(
+            resp => {
+                let company = resp.data
+                self.setState({
+                    company: company
+                })
+            }
+        )
+    }
     render() {
+        let active;
+        if(!this.state.company.active){
+            active=<button className="btn btn-success mr-1">Activate</button>
+        }else{
+            active=<button className="btn btn-danger ml-1">De-Activate</button>
+        }
         return (
             <>
                 <h2>{this.state.company.companyName}</h2>
@@ -34,9 +52,29 @@ export default class CompanyDetails extends Component {
                         <div className="card">
                             <div className="card-body">
                                 <h5 class="card-title"><span className="roundNumberIcon">1</span>Company</h5>
-                                <div className="">
-                                    <label className="">Company Name</label>
-                                    <p>{this.state.company.companyName}</p>
+                                <div className="form-fields">
+                                    <label className="form-label">Company Name:</label>
+                                    <div className="form-value">{this.state.company.companyName}</div>
+                                </div>
+                                <div className="form-fields">
+                                    <label className="form-label">Address Line 1:</label>
+                                    <div className="form-value">{this.state.company.addressLine1}</div>
+                                </div>
+                                <div className="form-fields">
+                                    <label className="form-label">Address Line 2:</label>
+                                    <div className="form-value">{this.state.company.addressLine2}</div>
+                                </div>
+                                <div className="form-fields">
+                                    <label className="form-label">City:</label>
+                                    <div className="form-value">{this.state.company.city}</div>
+                                </div>
+                                <div className="form-fields">
+                                    <label className="form-label">State:</label>
+                                    <div className="form-value">{this.state.company.state}</div>
+                                </div>
+                                <div className="form-fields">
+                                    <label className="form-label">Pincode:</label>
+                                    <div className="form-value">{this.state.company.pinCode}</div>
                                 </div>
                             </div>
                         </div>
@@ -45,15 +83,42 @@ export default class CompanyDetails extends Component {
                         <div className="card">
                             <div className="card-body">
                                 <h5 class="card-title"><span className="roundNumberIcon">2</span>Owner</h5>
-                                <h6 class="card-subtitle mb-2 text-muted"></h6>
+                                <div className="form-fields">
+                                    <label className="form-label">Owner name:</label>
+                                    <div className="form-value">{this.state.company.city}</div>
+                                </div>
+                                <div className="form-fields">
+                                    <label className="form-label">Primary Email:</label>
+                                    <div className="form-value">{this.state.company.primaryEmail}</div>
+                                </div>
+                                <div className="form-fields">
+                                    <label className="form-label">Secondary Email:</label>
+                                    <div className="form-value">{this.state.company.secondaryEmail}</div>
+                                </div>
+                                <div className="form-fields">
+                                    <label className="form-label">Primary Phone:</label>
+                                    <div className="form-value">{this.state.company.phonePrimary}</div>
+                                </div>
+                                <div className="form-fields">
+                                    <label className="form-label">Secondary Phone:</label>
+                                    <div className="form-value">{this.state.company.phoneSecondary}</div>
+                                </div>
+                                <div className="form-fields">
+                                    <label className="form-label">Fax:</label>
+                                    <div className="form-value">{this.state.company.faxNo}</div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div className="col-md-4 grid-margin stretch-card">
-                        <div className="card">
-                            <div className="card-body">
-                                <h5 class="card-title"><span className="roundNumberIcon bg-info">0</span>Operations</h5>
-                                <h6 class="card-subtitle mb-2 text-muted"></h6>
+                    <div className="col-md-4 grid-margin flex-column">
+                        <div className="row">
+                            <div className="col-md-12 grid-margin stretch-card">
+                                <div className="card">
+                                    <div className="card-body">
+                                        <h5 class="card-title"><span className="roundNumberIcon bg-info">0</span>Operations</h5>
+                                        {active}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -63,7 +128,30 @@ export default class CompanyDetails extends Component {
                         <div className="card">
                             <div className="card-body">
                                 <h5 class="card-title"><span className="roundNumberIcon">3</span>Bank</h5>
-                                
+                                <div className="form-fields">
+                                    <label className="form-label">Bank name:</label>
+                                    <div className="form-value">{this.state.company.bankName}</div>
+                                </div>
+                                <div className="form-fields">
+                                    <label className="form-label">IFSC Code:</label>
+                                    <div className="form-value">{this.state.company.branchIFSCCode}</div>
+                                </div>
+                                <div className="form-fields">
+                                    <label className="form-label">Branch:</label>
+                                    <div className="form-value">{this.state.company.branch}</div>
+                                </div>
+                                <div className="form-fields">
+                                    <label className="form-label">Account Number:</label>
+                                    <div className="form-value">{this.state.company.accountNo}</div>
+                                </div>
+                                <div className="form-fields">
+                                    <label className="form-label">Account Name:</label>
+                                    <div className="form-value">{this.state.company.accountName}</div>
+                                </div>
+                                <div className="form-fields">
+                                    <label className="form-label">Account Type:</label>
+                                    <div className="form-value">{this.state.company.accountType}</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -71,7 +159,30 @@ export default class CompanyDetails extends Component {
                         <div className="card">
                             <div className="card-body">
                                 <h5 class="card-title"><span className="roundNumberIcon">4</span>Others</h5>
-                                <h6 class="card-subtitle mb-2 text-muted"></h6>
+                                <div className="form-fields">
+                                    <label className="form-label">Tan Number:</label>
+                                    <div className="form-value">{this.state.company.tanNo}</div>
+                                </div>
+                                <div className="form-fields">
+                                    <label className="form-label">GST Number:</label>
+                                    <div className="form-value">{this.state.company.gstNo}</div>
+                                </div>
+                                <div className="form-fields">
+                                    <label className="form-label">PAN:</label>
+                                    <div className="form-value">{this.state.company.panNo}</div>
+                                </div>
+                                <div className="form-fields">
+                                    <label className="form-label">Service TAX Reg Number</label>
+                                    <div className="form-value">{this.state.company.serviceTaxRegNo}</div>
+                                </div>
+                                <div className="form-fields">
+                                    <label className="form-label">Accounting Type:</label>
+                                    <div className="form-value">{this.state.company.accountingType}</div>
+                                </div>
+                                <div className="form-fields">
+                                    <label className="form-label">Swift Code:</label>
+                                    <div className="form-value">{this.state.company.swiftCode}</div>
+                                </div>
                             </div>
                         </div>
                     </div>
