@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{Component} from 'react';
 import Nav from "./Nav"
 import Sidebar from "./Sidebar";
 import { Switch, Route } from 'react-router-dom';
@@ -16,7 +16,13 @@ const Main = () => (
   </main>
 )
 
-function App() {
+class App extends Component{
+
+  checkSuperUser(){
+    return false;
+  }
+
+  render(){
   return (
     <div>
       <Nav />
@@ -30,6 +36,7 @@ function App() {
       </div>
     </div>
   );
+  }
 }
 
 export default App;

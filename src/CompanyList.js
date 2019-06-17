@@ -199,7 +199,7 @@ export default class CompanyList extends Component {
             active:this.state.search.active
         }
 
-        axios.post("/api/company/filterCompany?pageNumber=".concat(pageNumber).concat("&pageSize=").concat(pageSize), data).then(
+        axios.post("/api/company/su/filterCompany?pageNumber=".concat(pageNumber).concat("&pageSize=").concat(pageSize), data).then(
             resp => {
                 let data = resp.data
                 self.setState({
@@ -235,11 +235,11 @@ export default class CompanyList extends Component {
         }
         let previous;
         if(!this.state.first){
-            previous=<li className="paginate_button page-item previous" ><a tabIndex="0" className="page-link c-pointer" onClick={(e)=>this.search(this.state.currentPage-1)}>Previous</a></li>
+            previous=<li className="paginate_button page-item previous" ><button tabIndex="0" className="page-link c-pointer" onClick={(e)=>this.search(this.state.currentPage-1)}>Previous</button></li>
         }
         let next;
         if(!this.state.last){
-            next=<li className="paginate_button page-item next" ><a tabIndex="0" className="page-link c-pointer" onClick={(e)=>this.search(this.state.currentPage+1)}>Next</a></li>
+            next=<li className="paginate_button page-item next" ><button tabIndex="0" className="page-link c-pointer" onClick={(e)=>this.search(this.state.currentPage+1)}>Next</button></li>
         }
         return (
             <div className="col-12 grid-margin">

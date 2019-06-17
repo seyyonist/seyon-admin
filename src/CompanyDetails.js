@@ -14,7 +14,7 @@ export default class CompanyDetails extends Component {
 
     getCompany(companyId) {
         let self = this
-        let companyByIdUrl = "/api/company/getCompanyById?companyId=".concat(companyId)
+        let companyByIdUrl = "/api/company/su/getCompanyById?companyId=".concat(companyId)
         axios.get(companyByIdUrl).then(
             resp => {
                 let company = resp.data
@@ -25,10 +25,10 @@ export default class CompanyDetails extends Component {
         )
     }
 
-    activate(){
+    activate(companyId){
         let self = this
-        let companyByIdUrl = "/api/company/getCompanyById?companyId=".concat(companyId)
-        axios.get(companyByIdUrl).then(
+        let activationUrl = "/api/company/su/activate?companyId=".concat(companyId)
+        axios.put(activationUrl).then(
             resp => {
                 let company = resp.data
                 self.setState({
@@ -37,12 +37,26 @@ export default class CompanyDetails extends Component {
             }
         )
     }
+
+    deActivate(companyId){
+        let self = this
+        let activationUrl = "/api/company/su/deActivate?companyId=".concat(companyId)
+        axios.put(activationUrl).then(
+            resp => {
+                let company = resp.data
+                self.setState({
+                    company: company
+                })
+            }
+        )
+    }
+
     render() {
         let active;
         if(!this.state.company.active){
-            active=<button className="btn btn-success mr-1">Activate</button>
+            active=<button className="btn btn-success mr-1" onClick={()=>this.activate(this.state.company.companyId)}>Activate</button>
         }else{
-            active=<button className="btn btn-danger ml-1">De-Activate</button>
+            active=<button className="btn btn-danger ml-1" onClick={()=>this.deActivate(this.state.company.companyId)}>De-Activate</button>
         }
         return (
             <>
