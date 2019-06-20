@@ -14,7 +14,7 @@ export default class CompanyDetails extends Component {
 
     getCompany(companyId) {
         let self = this
-        let companyByIdUrl = "/api/company/su/getCompanyById?companyId=".concat(companyId)
+        let companyByIdUrl = "/su/api/company/getCompanyById?companyId=".concat(companyId)
         axios.get(companyByIdUrl).then(
             resp => {
                 let company = resp.data
@@ -27,7 +27,7 @@ export default class CompanyDetails extends Component {
 
     activate(companyId){
         let self = this
-        let activationUrl = "/api/company/su/activate?companyId=".concat(companyId)
+        let activationUrl = "/su/api/company/activate?companyId=".concat(companyId)
         axios.put(activationUrl).then(
             resp => {
                 let company = resp.data
@@ -40,7 +40,7 @@ export default class CompanyDetails extends Component {
 
     deActivate(companyId){
         let self = this
-        let activationUrl = "/api/company/su/deActivate?companyId=".concat(companyId)
+        let activationUrl = "/su/api/company/deActivate?companyId=".concat(companyId)
         axios.put(activationUrl).then(
             resp => {
                 let company = resp.data

@@ -199,7 +199,7 @@ export default class CompanyList extends Component {
             active:this.state.search.active
         }
 
-        axios.post("/api/company/su/filterCompany?pageNumber=".concat(pageNumber).concat("&pageSize=").concat(pageSize), data).then(
+        axios.post("/su/api/company/filterCompany?pageNumber=".concat(pageNumber).concat("&pageSize=").concat(pageSize), data).then(
             resp => {
                 let data = resp.data
                 self.setState({
