@@ -4,6 +4,7 @@ import Sidebar from "./Sidebar";
 import { Switch, Route } from 'react-router-dom';
 import CompanyList from './CompanyList';
 import CompanyDetails from './CompanyDetails';
+import axios from 'axios';
 
 import './App.css';
 
@@ -22,10 +23,31 @@ class App extends Component{
     return false;
   }
 
+  state = {
+    username:""
+  }
+
+  componentDidMount() {
+    this.getAuthenicatedUser();
+  }
+
+  getAuthenicatedUser() {
+    let self = this
+    let url = "/api/user/authenticated"
+    axios.get(url).then(
+        resp => {
+            let user = resp.data
+            self.setState({
+              username: user.name
+            })
+        }
+    )
+  }
+
   render(){
   return (
     <div>
-      <Nav />
+      <Nav username={this.state.username}/>
       <div className="container-fluid page-body-wrapper">
         <Sidebar />
         <div className="main-panel">

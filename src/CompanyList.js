@@ -171,6 +171,12 @@ export default class CompanyList extends Component {
     handleStateChange(event) {
         const value = event.target.value;
         if (value === "") {
+            this.setState({
+                search: {
+                    state: value,
+                    city:""
+                }
+            })
             return
         }
         const cities = this.state.states.filter(st => st.state === value).map(st => st.districts)

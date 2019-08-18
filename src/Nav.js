@@ -1,11 +1,12 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+//import { Link } from 'react-router-dom';
 import './Nav.css';
 
-function Nav() {
+const Nav = props => {
 
   let today= new Date().toString();
 
+  
   return (
     <nav className="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
     <div className="navbar-brand-wrapper d-flex justify-content-center">
@@ -22,18 +23,8 @@ function Nav() {
         <li className="nav-item nav-profile dropdown">
           <p className="nav-link c-pointer"  data-toggle="dropdown" id="profileDropdown">
             <i className="fas fa-user "></i>
-            <span className="nav-profile-name">Welcome</span>
+            <span className="nav-profile-name">Welcome:&nbsp; {props.username}</span>
           </p>
-          <div className="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
-            <Link className="dropdown-item" to="/">
-              <i className="typcn typcn-cog-outline text-primary"></i>
-              Settings
-            </Link>
-            <Link className="dropdown-item" to="/">
-              <i className="typcn typcn-eject text-primary"></i>
-              Logout
-            </Link>
-          </div>
         </li>
       </ul>
       <ul className="navbar-nav navbar-nav-right">
