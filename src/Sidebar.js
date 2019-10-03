@@ -11,6 +11,12 @@ export default function Sidebar() {
             <span className="menu-title">Company</span>
           </Link>
         </li>
+        <li className="nav-item">
+          <Link className="nav-link" to="/sac">
+          <i className="fas fa-stroopwafel menu-icon" ></i>
+            <span className="menu-title">SAC Code</span>
+          </Link>
+        </li>
       </ul>
     </nav>
   )

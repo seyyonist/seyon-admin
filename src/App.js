@@ -7,12 +7,15 @@ import CompanyDetails from './CompanyDetails';
 import axios from 'axios';
 
 import './App.css';
+import SACCode from './SACCode';
 
 const Main = () => (
   <main>
     <Switch>
       <Route exact path='/' component={CompanyList} />
       <Route exact path="/companyDetails/:companyId" component={CompanyDetails} />
+      <Route exact path="/sac" component={SACCode} />
+      
     </Switch>
   </main>
 )
