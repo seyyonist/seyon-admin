@@ -63,7 +63,12 @@ export default class SACCode extends Component {
         const value = event.target.value;
         this.setState({
             selectedSacCode: {
-                id: value
+                id: value,
+                cgstPercent: this.state.selectedSacCode.cgstPercent,
+                igstPercent: this.state.selectedSacCode.igstPercent,
+                sacCode: this.state.selectedSacCode.sacCode,
+                sacDesc: this.state.selectedSacCode.sacDesc,
+                sgstPercent: this.state.selectedSacCode.sgstPercent
             }
         });
     }
@@ -72,7 +77,12 @@ export default class SACCode extends Component {
         const value = event.target.value;
         this.setState({
             selectedSacCode: {
-                cgstPercent: value
+                cgstPercent: value,
+                id: this.state.selectedSacCode.id,
+                igstPercent: this.state.selectedSacCode.igstPercent,
+                sacCode: this.state.selectedSacCode.sacCode,
+                sacDesc: this.state.selectedSacCode.sacDesc,
+                sgstPercent: this.state.selectedSacCode.sgstPercent
             }
         });
     }
@@ -80,7 +90,12 @@ export default class SACCode extends Component {
         const value = event.target.value;
         this.setState({
             selectedSacCode: {
-                igstPercent: value
+                igstPercent: value,
+                id: this.state.selectedSacCode.id,
+                cgstPercent: this.state.selectedSacCode.cgstPercent,
+                sacCode: this.state.selectedSacCode.sacCode,
+                sacDesc: this.state.selectedSacCode.sacDesc,
+                sgstPercent: this.state.selectedSacCode.sgstPercent
             }
         });
     }
@@ -88,7 +103,13 @@ export default class SACCode extends Component {
         const value = event.target.value;
         this.setState({
             selectedSacCode: {
-                sacCode: value
+                sacCode: value,
+                id: this.state.selectedSacCode.id,
+                cgstPercent: this.state.selectedSacCode.cgstPercent,
+                igstPercent: this.state.selectedSacCode.igstPercent,
+              
+                sacDesc: this.state.selectedSacCode.sacDesc,
+                sgstPercent: this.state.selectedSacCode.sgstPercent
             }
         });
     }
@@ -96,7 +117,12 @@ export default class SACCode extends Component {
         const value = event.target.value;
         this.setState({
             selectedSacCode: {
-                sacDesc: value
+                sacDesc: value,
+                id: this.state.selectedSacCode.id,
+                cgstPercent: this.state.selectedSacCode.cgstPercent,
+                igstPercent: this.state.selectedSacCode.igstPercent,
+                sacCode: this.state.selectedSacCode.sacCode,
+                sgstPercent: this.state.selectedSacCode.sgstPercent
             }
         });
     }
@@ -104,14 +130,48 @@ export default class SACCode extends Component {
         const value = event.target.value;
         this.setState({
             selectedSacCode: {
-                sgstPercent: value
+                sgstPercent: value,
+                id: this.state.selectedSacCode.id,
+                cgstPercent: this.state.selectedSacCode.cgstPercent,
+                igstPercent: this.state.selectedSacCode.igstPercent,
+                sacCode: this.state.selectedSacCode.sacCode,
+                sacDesc: this.state.selectedSacCode.sacDesc
             }
         });
     }
 
     handleSubmit(e){
         e.preventDefault();
-        alert("form submiting")
+
+        let self=this
+        let editedSac={
+            cgstPercent: this.state.selectedSacCode.cgstPercent,
+            id: this.state.selectedSacCode.id,
+            igstPercent: this.state.selectedSacCode.igstPercent,
+            sacCode: this.state.selectedSacCode.sacCode,
+            sacDesc: null == this.state.selectedSacCode.sacDesc ? "" : this.state.selectedSacCode.sacDesc,
+            sgstPercent: this.state.selectedSacCode.sgstPercent
+        }
+
+        axios.post("/api/invoice/sac",editedSac).then(
+            resp=>{
+                let sac=resp.data
+                self.setState({
+                    selectedSacCode: {
+                        cgstPercent: sac.cgstPercent,
+                        id: sac.id,
+                        igstPercent: sac.igstPercent,
+                        sacCode: sac.sacCode,
+                        sacDesc: sac.sacDesc,
+                        sgstPercent: sac.sgstPercent
+                    }
+                })
+                self.getSacCodes();
+            },
+            err=>{
+                console.log(err);
+            }
+        )
     }
     render() {
         let sacList = this.state.sacList.map(sac => {
