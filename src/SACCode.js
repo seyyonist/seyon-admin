@@ -5,6 +5,7 @@ export default class SACCode extends Component {
 
     state = {
         sacList: [],
+        fullSacList: [],
         selectedSacCode: {
             cgstPercent: "",
             id: "",
@@ -25,11 +26,13 @@ export default class SACCode extends Component {
             resp => {
                 console.log(resp);
                 self.setState({
-                    sacList: resp.data
+                    sacList: resp.data,
+                    fullSacList:resp.data
                 })
             },
             err => {
-                alert(err);
+                console.log(err)
+                alert("Error while retriving the records");
             }
         )
     }
@@ -139,7 +142,13 @@ export default class SACCode extends Component {
             }
         });
     }
-
+    handleFilter(e){
+        const value=e.target.value
+        let filteredValue=this.state.fullSacList.filter(sac=>sac.sacCode.toLowerCase().includes(value.toLowerCase()));
+        this.setState({
+           sacList: filteredValue
+        })
+    }
     handleSubmit(e){
         e.preventDefault();
 
@@ -167,9 +176,30 @@ export default class SACCode extends Component {
                     }
                 })
                 self.getSacCodes();
+                alert("Successfully saved")
             },
             err=>{
                 console.log(err);
+                alert("Error while Saving the record")
+            }
+        )
+    }
+
+
+    handleDelete(e){
+        e.preventDefault();
+        let self=this
+        let id=this.state.selectedSacCode.id
+        axios.delete("/api/invoice/sac?id=".concat(id),{responseType:'text'}).then(
+            resp=>{
+                console.log(resp.data)
+                self.getSacCodes();
+                self.newSac()
+                alert("Deleted Successfully")
+            },
+            err=>{
+                console.log(err);
+                alert("Error while deleting the record")
             }
         )
     }
@@ -186,16 +216,18 @@ export default class SACCode extends Component {
         return (
             <div className="row">
                 <div className="col-md-12 grid-margin">
-                    <h5 className="mb-2 text-titlecase mb-4">SAC Codes : <button className="btn btn-success btn-sm"><i className="fas fa-plus"></i>&nbsp;New</button></h5>
+                    <h5 className="mb-2 text-titlecase mb-4">SAC Codes : <button className="btn btn-success btn-sm" onClick={()=>this.newSac()}><i className="fas fa-plus"></i>&nbsp;New</button></h5>
                     <div className="row">
                         <div className="col-md-6 grid-margin ">
                             <div className="card">
                                 <div className="card-body">
-
+                                <input type="text" className="form-control" placeholder="Filter SACCode" onChange={(e)=>this.handleFilter(e)}/>
                                     <table className="table table-striped">
                                         <thead>
                                             <tr>
-                                                <th>SAC Code</th>
+                                                <th>
+                                                    SAC Code
+                                                </th>
                                                 <th>Description</th>
                                                 <th>Options</th>
                                             </tr>
@@ -244,7 +276,7 @@ export default class SACCode extends Component {
                                         </div>
                                         <input type="hidden" className="form-control" value={this.state.selectedSacCode.id} readOnly/>
                                         <button type="submit" className="btn btn-primary mr-2"><i className="fas fa-save"></i>&nbsp;Save</button>
-                                        <button className="btn btn-danger"><i className="fas fa-trash-alt"></i>&nbsp;Delete</button>
+                                        <button className="btn btn-danger" onClick={(e)=>this.handleDelete(e)}><i className="fas fa-trash-alt"></i>&nbsp;Delete</button>
                                     </form>
                                 </div>
                             </div>
