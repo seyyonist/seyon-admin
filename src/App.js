@@ -1,13 +1,15 @@
 import React,{Component} from 'react';
-import Nav from "./Nav"
-import Sidebar from "./Sidebar";
+import Nav from "./core/Nav"
+import Sidebar from "./core/Sidebar";
 import { Switch, Route } from 'react-router-dom';
-import CompanyList from './CompanyList';
-import CompanyDetails from './CompanyDetails';
+import CompanyList from './component/CompanyList';
+import CompanyDetails from './component/CompanyDetails';
 import axios from 'axios';
 
+import { API_ROOT } from './configuration/appConfig';
+
 import './App.css';
-import SACCode from './SACCode';
+import SACCode from './component/SACCode';
 
 const Main = () => (
   <main>
@@ -36,7 +38,7 @@ class App extends Component{
 
   getAuthenicatedUser() {
     let self = this
-    let url = "/api/user/authenticated"
+    let url = API_ROOT.concat("/api/user/authenticated")
     axios.get(url).then(
         resp => {
             let user = resp.data
