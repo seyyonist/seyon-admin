@@ -1,7 +1,16 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import { API_ROOT } from '../configuration/appConfig';
-export default class CompanyDetails extends Component {
+import { connect } from "react-redux";
+
+
+const mapStateToProps = state => {
+    return {
+      jwt: state.jwt,
+    };
+  };
+
+class ConnectedCompanyDetails extends Component {
 
     state = {
         company: {},
@@ -15,7 +24,11 @@ export default class CompanyDetails extends Component {
     getCompany(companyId) {
         let self = this
         let companyByIdUrl = API_ROOT.concat("/su/api/company/getCompanyById?companyId=").concat(companyId)
-        axios.get(companyByIdUrl).then(
+        let headers={
+            Authorization:"bearer "+this.props.jwt,
+            skipCompCheck:'Y'
+        }
+        axios.get(companyByIdUrl,{headers:headers}).then(
             resp => {
                 let company = resp.data
                 self.setState({
@@ -28,7 +41,12 @@ export default class CompanyDetails extends Component {
     activate(companyId){
         let self = this
         let activationUrl = API_ROOT.concat("/su/api/company/activate?companyId=").concat(companyId)
-        axios.put(activationUrl).then(
+
+        let headers={
+            Authorization:"bearer "+this.props.jwt,
+            skipCompCheck:'Y'
+        }
+        axios.post(activationUrl,{},{headers:headers}).then(
             resp => {
                 let company = resp.data
                 self.setState({
@@ -41,7 +59,11 @@ export default class CompanyDetails extends Component {
     deActivate(companyId){
         let self = this
         let activationUrl = API_ROOT.concat("/su/api/company/deActivate?companyId=").concat(companyId)
-        axios.put(activationUrl).then(
+        let headers={
+            Authorization:"bearer "+this.props.jwt,
+            skipCompCheck:'Y'
+        }
+        axios.post(activationUrl,{},{headers:headers}).then(
             resp => {
                 let company = resp.data
                 self.setState({
@@ -213,7 +235,8 @@ export default class CompanyDetails extends Component {
     }
 
 }
-
+const CompanyDetails=connect(mapStateToProps)(ConnectedCompanyDetails)
+export default CompanyDetails
 /*
 companyId	1
 companyName	Company 1

@@ -1,7 +1,16 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import { API_ROOT } from '../configuration/appConfig';
-export default class SACCode extends Component {
+import { connect } from "react-redux";
+
+
+const mapStateToProps = state => {
+    return {
+      jwt: state.jwt,
+    };
+  };
+
+class ConnectedSACCode extends Component {
 
     state = {
         sacList: [],
@@ -22,7 +31,11 @@ export default class SACCode extends Component {
 
     getSacCodes() {
         let self = this
-        axios.get(API_ROOT.concat("/api/invoice/sac")).then(
+        let headers={
+            Authorization:"bearer "+this.props.jwt,
+            skipCompCheck:'Y'
+        }
+        axios.get(API_ROOT.concat("/api/invoice/sac"),{headers:headers}).then(
             resp => {
                 console.log(resp);
                 self.setState({
@@ -161,8 +174,11 @@ export default class SACCode extends Component {
             sacDesc: null == this.state.selectedSacCode.sacDesc ? "" : this.state.selectedSacCode.sacDesc,
             sgstPercent: this.state.selectedSacCode.sgstPercent
         }
-
-        axios.post("/api/invoice/sac",editedSac).then(
+        let headers={
+            Authorization:"bearer "+this.props.jwt,
+            skipCompCheck:'Y'
+        }
+        axios.post(API_ROOT.concat("/api/invoice/sac"),editedSac,{headers:headers}).then(
             resp=>{
                 let sac=resp.data
                 self.setState({
@@ -190,7 +206,11 @@ export default class SACCode extends Component {
         e.preventDefault();
         let self=this
         let id=this.state.selectedSacCode.id
-        axios.delete("/api/invoice/sac?id=".concat(id),{responseType:'text'}).then(
+        let headers={
+            Authorization:"bearer "+this.props.jwt,
+            skipCompCheck:'Y'
+        }
+        axios.delete(API_ROOT.concat("/api/invoice/sac?id=").concat(id),{responseType:'text',headers:headers}).then(
             resp=>{
                 console.log(resp.data)
                 self.getSacCodes();
@@ -287,3 +307,6 @@ export default class SACCode extends Component {
         )
     }
 }
+
+const SACCode=connect(mapStateToProps)(ConnectedSACCode)
+export default SACCode

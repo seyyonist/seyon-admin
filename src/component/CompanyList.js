@@ -5,6 +5,15 @@ import { Link } from 'react-router-dom';
 import { city_state } from '../configuration/city_state';
 import { status } from '../configuration/company_status';
 import { API_ROOT } from '../configuration/appConfig';
+import { connect } from "react-redux";
+
+
+const mapStateToProps = state => {
+    return {
+      jwt: state.jwt,
+    };
+  };
+
 const CompanyRow = (props) => {
     let active;
     if (props.txn.active) {
@@ -33,7 +42,7 @@ const CitySelect = props => <select name="city" className="form-control" value={
 
 const StatusSelect = props => <select name="status" className="form-control" value={props.selectedValue} onChange={(e) => props.handleStateChange(e)}><option />{props.data.map((city, index) => <option key={index}>{city}</option>)}</select>;
 
-export default class CompanyList extends Component {
+ class ConnectedCompanyList extends Component {
 
     state = {
         companyList: [],
@@ -191,7 +200,12 @@ export default class CompanyList extends Component {
             status: this.state.search.status,
             active: this.state.search.active
         }
-        axios.post(API_ROOT.concat("/su/api/company/filterCompany?pageNumber=").concat(pageNumber).concat("&pageSize=").concat(pageSize), data).then(
+        let url=API_ROOT.concat("/su/api/company/filterCompany?pageNumber=").concat(pageNumber).concat("&pageSize=").concat(pageSize)
+        let headers={
+            Authorization:"bearer "+this.props.jwt,
+            skipCompCheck:'Y'
+        }
+        axios.post(url, data,{headers:headers}).then(
             resp => {
                 let data = resp.data
                 self.setState({
@@ -339,3 +353,5 @@ export default class CompanyList extends Component {
         )
     }
 }
+const CompanyList=connect(mapStateToProps)(ConnectedCompanyList)
+export default CompanyList
