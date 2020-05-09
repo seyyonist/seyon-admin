@@ -1,8 +1,8 @@
 let backendHost;
 
-const hostname = window && window.location && window.location.hostname;
+const hostname = window && window.location && window.location.host;
 console.log("HostName:"+hostname)
-if(hostname === 'localhost') {
+if(hostname === 'localhost:4000') {
   backendHost = 'http://localhost:8020';
 }else{
   backendHost = '';
