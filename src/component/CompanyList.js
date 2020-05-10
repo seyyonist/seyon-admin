@@ -2,15 +2,26 @@ import React, { Component } from 'react';
 import axios from 'axios';
 
 import { Link } from 'react-router-dom';
+import { city_state } from '../configuration/city_state';
+import { status } from '../configuration/company_status';
+import { API_ROOT } from '../configuration/appConfig';
+import { connect } from "react-redux";
+
+
+const mapStateToProps = state => {
+    return {
+      jwt: state.jwt,
+    };
+  };
 
 const CompanyRow = (props) => {
     let active;
-    if(props.txn.active){
-        active=<div className="badge badge-success">Active</div>
-    }else{
-        active=<div className="badge badge-outline-primary">inActive</div>
+    if (props.txn.active) {
+        active = <div className="badge badge-success">Active</div>
+    } else {
+        active = <div className="badge badge-outline-primary">inActive</div>
     }
-    let url="/companyDetails/".concat(props.txn.companyId);
+    let url = "/companyDetails/".concat(props.txn.companyId);
     return (
         <tr>
             <td>{props.txn.companyName}</td>
@@ -31,7 +42,7 @@ const CitySelect = props => <select name="city" className="form-control" value={
 
 const StatusSelect = props => <select name="status" className="form-control" value={props.selectedValue} onChange={(e) => props.handleStateChange(e)}><option />{props.data.map((city, index) => <option key={index}>{city}</option>)}</select>;
 
-export default class CompanyList extends Component {
+ class ConnectedCompanyList extends Component {
 
     state = {
         companyList: [],
@@ -41,7 +52,7 @@ export default class CompanyList extends Component {
             city: "",
             state: "",
             status: "",
-            active:false
+            active: false
         },
         first: true,
         last: true,
@@ -54,7 +65,7 @@ export default class CompanyList extends Component {
         states: [],
         cities: [],
         statuses: [],
-        currentPage:-1
+        currentPage: -1
     }
 
     componentDidMount() {
@@ -64,27 +75,12 @@ export default class CompanyList extends Component {
 
     getCityState() {
         let self = this;
-        axios.get("/city_state.json").then(
-            resp => {
-                self.setState({
-                    states: resp.data.states
-                })
-            },
-            err => {
-                console.log(err)
-            }
-        )
-        axios.get("/company_status.json").then(
-            resp => {
-                self.setState({
-                    statuses: resp.data.status
-                })
-            },
-            err => {
-                console.log(err)
-            }
-        )
-
+        self.setState({
+            states: city_state.states
+        })
+        self.setState({
+            statuses: status.status
+        })
     }
     clearForm() {
         this.setState({
@@ -106,7 +102,7 @@ export default class CompanyList extends Component {
                 state: this.state.search.state,
                 status: this.state.search.status,
                 companyName: value,
-                active:this.state.search.active
+                active: this.state.search.active
             }
         });
     }
@@ -120,7 +116,7 @@ export default class CompanyList extends Component {
                 city: this.state.search.city,
                 state: this.state.search.state,
                 status: this.state.search.status,
-                active:this.state.search.active
+                active: this.state.search.active
             }
         });
     }
@@ -134,7 +130,7 @@ export default class CompanyList extends Component {
                 ownerName: this.state.search.ownerName,
                 state: this.state.search.state,
                 status: this.state.search.status,
-                active:this.state.search.active
+                active: this.state.search.active
             }
         });
     }
@@ -148,12 +144,12 @@ export default class CompanyList extends Component {
                 city: this.state.search.city,
                 state: this.state.search.state,
                 status: value,
-                active:this.state.search.active
+                active: this.state.search.active
             }
         });
     }
 
-    handleCheckboxChange(event){
+    handleCheckboxChange(event) {
         const value = event.target.checked;
         console.log(value)
         this.setState({
@@ -163,9 +159,9 @@ export default class CompanyList extends Component {
                 city: this.state.search.city,
                 state: this.state.search.state,
                 status: this.state.search.status,
-                active:value
+                active: value
             }
-        }); 
+        });
     }
 
     handleStateChange(event) {
@@ -174,7 +170,7 @@ export default class CompanyList extends Component {
             this.setState({
                 search: {
                     state: value,
-                    city:""
+                    city: ""
                 }
             })
             return
@@ -187,13 +183,13 @@ export default class CompanyList extends Component {
                 ownerName: this.state.search.ownerName,
                 city: this.state.search.city,
                 status: this.state.search.status,
-                active:this.state.search.active
+                active: this.state.search.active
             },
             cities: cities[0]
         });
     }
 
-    search(pageNumber=0, pageSize=6) {
+    search(pageNumber = 0, pageSize = 6) {
 
         let self = this;
         let data = {
@@ -202,10 +198,14 @@ export default class CompanyList extends Component {
             city: this.state.search.city,
             state: this.state.search.state,
             status: this.state.search.status,
-            active:this.state.search.active
+            active: this.state.search.active
         }
-
-        axios.post("/su/api/company/filterCompany?pageNumber=".concat(pageNumber).concat("&pageSize=").concat(pageSize), data).then(
+        let url=API_ROOT.concat("/su/api/company/filterCompany?pageNumber=").concat(pageNumber).concat("&pageSize=").concat(pageSize)
+        let headers={
+            Authorization:"bearer "+this.props.jwt,
+            skipCompCheck:'Y'
+        }
+        axios.post(url, data,{headers:headers}).then(
             resp => {
                 let data = resp.data
                 self.setState({
@@ -217,7 +217,7 @@ export default class CompanyList extends Component {
                     size: data.size,
                     totalElements: data.totalElements,
                     totalPages: data.totalPages,
-                    currentPage:data.pageable.pageNumber
+                    currentPage: data.pageable.pageNumber
                 })
                 self.generatePageNumbers(data.totalPages);
             },
@@ -240,12 +240,12 @@ export default class CompanyList extends Component {
             tableData = this.state.companyList.map(c => <CompanyRow txn={c} key={c.companyId} />);
         }
         let previous;
-        if(!this.state.first){
-            previous=<li className="paginate_button page-item previous" ><button tabIndex="0" className="page-link c-pointer" onClick={(e)=>this.search(this.state.currentPage-1)}>Previous</button></li>
+        if (!this.state.first) {
+            previous = <li className="paginate_button page-item previous" ><button tabIndex="0" className="page-link c-pointer" onClick={(e) => this.search(this.state.currentPage - 1)}>Previous</button></li>
         }
         let next;
-        if(!this.state.last){
-            next=<li className="paginate_button page-item next" ><button tabIndex="0" className="page-link c-pointer" onClick={(e)=>this.search(this.state.currentPage+1)}>Next</button></li>
+        if (!this.state.last) {
+            next = <li className="paginate_button page-item next" ><button tabIndex="0" className="page-link c-pointer" onClick={(e) => this.search(this.state.currentPage + 1)}>Next</button></li>
         }
         return (
             <div className="col-12 grid-margin">
@@ -295,13 +295,13 @@ export default class CompanyList extends Component {
                                         </div>
                                     </div>
                                     <div className="col-md-1">
-                                    <div className="form-group">
-                                    <p> &nbsp;Active&nbsp;</p>
+                                        <div className="form-group">
+                                            <p> &nbsp;Active&nbsp;</p>
                                             <label className="toggle-switch toggle-switch-success mt-2">
-                                                <input type="checkbox"  checked={this.state.search.active}  onChange={(e)=>this.handleCheckboxChange(e)}/>
+                                                <input type="checkbox" checked={this.state.search.active} onChange={(e) => this.handleCheckboxChange(e)} />
                                                 <span className="toggle-slider round"></span>
                                             </label>
-                                            </div>
+                                        </div>
                                     </div>
 
                                     <div className="col-md-1">
@@ -312,7 +312,7 @@ export default class CompanyList extends Component {
                                             <button className="btn btn-inverse-primary mt-2 btn-sm" onClick={() => this.clearForm()}><i className="fas fa-broom"></i></button>
                                         </div>
                                     </div>
-                                    
+
                                 </div>
                             </div>
                         </div>
@@ -353,3 +353,5 @@ export default class CompanyList extends Component {
         )
     }
 }
+const CompanyList=connect(mapStateToProps)(ConnectedCompanyList)
+export default CompanyList

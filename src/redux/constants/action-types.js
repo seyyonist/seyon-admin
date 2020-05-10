@@ -1,0 +1,3 @@
+export const UPDATE_AUTHENTICATION = "UPDATE_AUTHENTICATION";
+export const LOGOUT = "LOGOUT";
+

@@ -1,5 +1,4 @@
 import React from 'react';
-//import { Link } from 'react-router-dom';
 import './Nav.css';
 
 const Nav = props => {
@@ -24,6 +23,11 @@ const Nav = props => {
           <p className="nav-link c-pointer"  data-toggle="dropdown" id="profileDropdown">
             <i className="fas fa-user "></i>
             <span className="nav-profile-name">Welcome:&nbsp; {props.username}</span>
+          </p>
+        </li>
+        <li className="nav-item nav-profile dropdown">
+          <p className="nav-link c-pointer"  data-toggle="dropdown" id="profileDropdown">
+            <button onClick={props.logout} className="btn btn-danger btn-rounded btn-sm">Logout</button>
           </p>
         </li>
       </ul>
